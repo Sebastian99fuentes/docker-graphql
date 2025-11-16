@@ -51,7 +51,7 @@ jobs:
         
     - name: Push Docker Image
       run: |
-        docker push ssfuentes99/docker-graphql:latest .
-        docker push ssfuentes99/docker-graphql:latest .
+        docker push ssfuentes99/docker-graphql:latest
+        docker push ssfuentes99/docker-graphql:latest 
 #    - name: Build the Docker image
 #     run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
