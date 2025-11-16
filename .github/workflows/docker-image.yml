@@ -42,6 +42,7 @@ jobs:
         docker build -t ssfuentes99/docker-graphql:latest .
         
     - name: Push Docker Image
+      run:
         docker push ssfuentes99/docker-graphql:latest .
         docker push -t ssfuentes99/docker-graphql:latest .
 #    - name: Build the Docker image
