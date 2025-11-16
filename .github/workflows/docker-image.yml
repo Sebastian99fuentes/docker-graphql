@@ -35,6 +35,14 @@ jobs:
         echo "new version $NEW_VERSION"
         docker login -u $DOCKER_USER -P $DOCKER_PASSWORD
         echo "Fin del Login"
+
+    - name: Set NEW_VERSION env variable
+      run: |
+        if [ -z "${{ steps.version.outputs.version }}" ]; then
+        echo "Semantic version not generated! Failing job."
+        exit 1
+        fi
+        echo "NEW_VERSION=${{ steps.version.outputs.version }}" >> $GITHUB_ENV
       
     - name: Build Docker Image
       run: |
@@ -44,6 +52,6 @@ jobs:
     - name: Push Docker Image
       run: |
         docker push ssfuentes99/docker-graphql:latest .
-        docker push -t ssfuentes99/docker-graphql:latest .
+        docker push ssfuentes99/docker-graphql:latest .
 #    - name: Build the Docker image
 #     run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
