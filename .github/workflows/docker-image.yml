@@ -13,10 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Ckeckout code
+    - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
     - name: Git Semantic Version
       uses: PaulHatch/semantic-version@v5.4.0
       with:
@@ -27,31 +28,28 @@ jobs:
       
     - name: Docker Login
       env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER}}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
-        NEW_VERSION: ${{ steps.version.outputs.version }}
-      run:
-        echo "Iniciando login $DOCKER_USER  $DOCKER_PASSWORD"
-        echo "new version $NEW_VERSION "
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        echo "Fin del Login"
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
     - name: Set NEW_VERSION env variable
       run: |
         if [ -z "${{ steps.version.outputs.version }}" ]; then
-        echo "Semantic version not generated! Failing job."
-        exit 1
+          echo "Semantic version not generated! Failing job."
+          exit 1
         fi
         echo "NEW_VERSION=${{ steps.version.outputs.version }}" >> $GITHUB_ENV
       
     - name: Build Docker Image
       run: |
-        docker build -t ssfuentes99/docker-graphql:$NEW_VERSION .
-        docker build -t ssfuentes99/docker-graphql:latest .
-        
+        docker build -t ssfuentes99/docker-graphql:$NEW_VERSION -t ssfuentes99/docker-graphql:latest .
+
     - name: Push Docker Image
       run: |
+        docker push ssfuentes99/docker-graphql:$NEW_VERSION
         docker push ssfuentes99/docker-graphql:latest
+
         docker push ssfuentes99/docker-graphql:latest 
 #    - name: Build the Docker image
 #     run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
