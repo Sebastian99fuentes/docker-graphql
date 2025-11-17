@@ -33,7 +33,7 @@ jobs:
       run:
         echo "Iniciando login $DOCKER_USER  $DOCKER_PASSWORD"
         echo "new version $NEW_VERSION "
-        docker login -u $DOCKER_USER -P $DOCKER_PASSWORD
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "Fin del Login"
 
     - name: Set NEW_VERSION env variable
